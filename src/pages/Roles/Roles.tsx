@@ -3,46 +3,42 @@ import {Outlet, useLoaderData, useNavigate} from "react-router-dom";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {Row as TRow} from "@tanstack/react-table";
 import Table from "components/Table/Table";
-import {institutionColumns as INSTITUTION_COLUMNS} from "./institutionColumns";
 import axiosClient from "../../utils/axios_client";
-import InstitutionDelete from "./InstitutionDelete";
 import {BsPlusSquareFill} from "react-icons/bs";
-import {IInstitution} from "../../utils/interfaces";
+import {IRole} from "../../utils/interfaces";
+import {roleColumns as ROLE_COLUMNS} from "./roleColumns";
+import DeleteRole from "./RoleDelete";
 
 /**
  * @author Ankur Mundra on June, 2023
  */
 
-const Institutions = () => {
+const Roles = () => {
   const navigate = useNavigate();
-  const institutions: any = useLoaderData();
+  const roles: any = useLoaderData();
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<{
     visible: boolean;
-    data?: IInstitution;
+    data?: IRole;
   }>({ visible: false });
 
-  const onDeleteInstitutionHandler = useCallback(
-    () => setShowDeleteConfirmation({ visible: false }),
-    []
-  );
+  const onDeleteRoleHandler = useCallback(() => setShowDeleteConfirmation({ visible: false }), []);
 
   const onEditHandle = useCallback(
-    (row: TRow<IInstitution>) => navigate(`edit/${row.original.id}`),
+    (row: TRow<IRole>) => navigate(`edit/${row.original.id}`),
     [navigate]
   );
 
   const onDeleteHandle = useCallback(
-    (row: TRow<IInstitution>) => setShowDeleteConfirmation({ visible: true, data: row.original }),
+    (row: TRow<IRole>) => setShowDeleteConfirmation({ visible: true, data: row.original }),
     []
   );
 
   const tableColumns = useMemo(
-    () => INSTITUTION_COLUMNS(onEditHandle, onDeleteHandle),
+    () => ROLE_COLUMNS(onEditHandle, onDeleteHandle),
     [onDeleteHandle, onEditHandle]
   );
-
-  const tableData = useMemo(() => institutions, [institutions]);
+  const tableData = useMemo(() => roles, [roles]);
 
   return (
     <>
@@ -51,29 +47,26 @@ const Institutions = () => {
         <Container fluid className="px-md-4">
           <Row className="mt-md-2 mb-md-2">
             <Col className="text-center">
-              <h1>Manage Institutions</h1>
+              <h1>Manage Roles</h1>
             </Col>
             <hr />
           </Row>
-          <Row>
+          <Row className="mb-1">
             <Col md={{ span: 1, offset: 8 }}>
               <Button variant="outline-success" onClick={() => navigate("new")}>
                 <BsPlusSquareFill />
               </Button>
             </Col>
             {showDeleteConfirmation.visible && (
-              <InstitutionDelete
-                institutionData={showDeleteConfirmation.data!}
-                onClose={onDeleteInstitutionHandler}
-              />
+              <DeleteRole roleData={showDeleteConfirmation.data!} onClose={onDeleteRoleHandler} />
             )}
           </Row>
           <Row>
             <Table
               data={tableData}
               columns={tableColumns}
-              columnVisibility={{ id: false }}
               tableSize={{ span: 6, offset: 3 }}
+              showGlobalFilter={false}
             />
           </Row>
         </Container>
@@ -82,9 +75,9 @@ const Institutions = () => {
   );
 };
 
-export async function loadInstitutions() {
-  const institutionsResponse = await axiosClient.get("/institutions");
-  return await institutionsResponse.data;
+export async function loadRoles() {
+  const rolesResponse = await axiosClient.get("/roles");
+  return await rolesResponse.data;
 }
 
-export default Institutions;
+export default Roles;

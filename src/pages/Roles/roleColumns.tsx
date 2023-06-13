@@ -2,26 +2,31 @@ import {createColumnHelper, Row} from "@tanstack/react-table";
 import {MdOutlineDeleteForever as Remove} from "react-icons/md";
 import {BsPencilFill as Edit} from "react-icons/bs";
 import {Button} from "react-bootstrap";
-import {IInstitution} from "../../utils/interfaces";
+import {IRole} from "../../utils/interfaces";
 
 /**
  * @author Ankur Mundra on June, 2023
  */
 
-type Fn = (row: Row<IInstitution>) => void;
-const columnHelper = createColumnHelper<IInstitution>();
-export const institutionColumns = (handleEdit: Fn, handleDelete: Fn) => [
+type Fn = (row: Row<IRole>) => void;
+const columnHelper = createColumnHelper<IRole>();
+export const roleColumns = (handleEdit: Fn, handleDelete: Fn) => [
   columnHelper.accessor("id", {
     header: "Id",
-    enableSorting: false,
     enableColumnFilter: false,
+    enableSorting: false,
   }),
 
   columnHelper.accessor("name", {
-    header: "Name",
+    header: "Role Name",
     enableSorting: true,
   }),
 
+  columnHelper.accessor("parent_id", {
+    header: "Parent Id",
+    enableSorting: true,
+    enableColumnFilter: false,
+  }),
   columnHelper.display({
     id: "actions",
     header: "Actions",

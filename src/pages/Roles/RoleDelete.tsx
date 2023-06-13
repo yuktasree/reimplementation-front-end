@@ -4,44 +4,44 @@ import {useDispatch} from "react-redux";
 import {alertActions} from "store/slices/alertSlice";
 import {HttpMethod} from "utils/httpMethods";
 import useAPI from "../../hooks/useAPI";
-import {IUserResponse as IUser} from "../../utils/interfaces";
+import {IRole} from "../../utils/interfaces";
 
 /**
- * @author Ankur Mundra on April, 2023
+ * @author Ankur Mundra on June, 2023
  */
 
-interface IDeleteUser {
-  userData: IUser;
+interface IDeleteRole {
+  roleData: IRole;
   onClose: () => void;
 }
 
-const DeleteUser: React.FC<IDeleteUser> = ({ userData, onClose }) => {
-  const { data: deletedUser, error: userError, sendRequest: deleteUser } = useAPI();
+const DeleteRole: React.FC<IDeleteRole> = ({ roleData, onClose }) => {
+  const { data: response, error: roleError, sendRequest: deleteRole } = useAPI();
   const [show, setShow] = useState<boolean>(true);
   const dispatch = useDispatch();
 
   // Delete user
   const deleteHandler = () =>
-    deleteUser({ url: `/users/${userData.id}`, method: HttpMethod.DELETE });
+    deleteRole({ url: `/roles/${roleData.id}`, method: HttpMethod.DELETE });
 
   // Show error if any
   useEffect(() => {
-    if (userError) dispatch(alertActions.showAlert({ variant: "danger", message: userError }));
-  }, [userError, dispatch]);
+    if (roleError) dispatch(alertActions.showAlert({ variant: "danger", message: roleError }));
+  }, [roleError, dispatch]);
 
   // Close modal if user is deleted
   useEffect(() => {
-    if (deletedUser?.status && deletedUser?.status >= 200 && deletedUser?.status < 300) {
+    if (response?.status && response?.status >= 200 && response?.status < 300) {
       setShow(false);
       dispatch(
         alertActions.showAlert({
           variant: "success",
-          message: `User ${userData.name} deleted successfully!`,
+          message: `Role: ${roleData.name} deleted successfully!`,
         })
       );
       onClose();
     }
-  }, [deletedUser?.status, dispatch, onClose, userData.name]);
+  }, [response?.status, dispatch, onClose, roleData.name]);
 
   const closeHandler = () => {
     setShow(false);
@@ -51,11 +51,11 @@ const DeleteUser: React.FC<IDeleteUser> = ({ userData, onClose }) => {
   return (
     <Modal show={show} onHide={closeHandler}>
       <Modal.Header closeButton>
-        <Modal.Title>Delete User</Modal.Title>
+        <Modal.Title>Delete Role</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p>
-          Are you sure you want to delete user <b>{userData.name}?</b>
+          Are you sure you want to delete role <b>{roleData.name}?</b>
         </p>
       </Modal.Body>
       <Modal.Footer>
@@ -70,4 +70,4 @@ const DeleteUser: React.FC<IDeleteUser> = ({ userData, onClose }) => {
   );
 };
 
-export default DeleteUser;
+export default DeleteRole;

@@ -1,14 +1,4 @@
 import React from "react";
-import Home from "pages/Home";
-import Questionnaire from "pages/EditQuestionnaire/Questionnaire";
-import RootLayout from "layout/Root";
-import Courses from "pages/Courses/Course";
-import CourseEditor from "pages/Courses/CourseEditor";
-import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUtil";
-import Home from "pages/Home";
-import TA from "pages/TA/TA";
-import TAEditor from "pages/TA/TAEditor";
-import { loadTAs } from "pages/TA/TAUtil";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import AdministratorLayout from "./layout/Administrator";
 import ManageUserTypes, { loader as loadUsers } from "./pages/Administrator/ManageUserTypes";
@@ -18,13 +8,24 @@ import InstitutionEditor, { loadInstitution } from "./pages/Institutions/Institu
 import Institutions, { loadInstitutions } from "./pages/Institutions/Institutions";
 import RoleEditor, { loadAvailableRole } from "./pages/Roles/RoleEditor";
 import Roles, { loadRoles } from "./pages/Roles/Roles";
-import Users from "./pages/Users/User";
-import UserEditor from "./pages/Users/UserEditor";
-import { loadUserDataRolesAndInstitutions } from "./pages/Users/userUtil";
+import Assignment from './pages/Assignments/Assignment'
+import AssignmentEditor from "pages/Assignments/AssignmentEditor";
 import ErrorPage from "./router/ErrorPage";
 import NotFound from "./router/NotFound";
 import ProtectedRoute from "./router/ProtectedRoute";
 import { ROLE } from "./utils/interfaces";
+import RootLayout from "layout/Root";
+import UserEditor from "./pages/Users/UserEditor";
+import Users from "./pages/Users/User";
+import { loadUserDataRolesAndInstitutions } from "./pages/Users/userUtil";
+import Home from "pages/Home";
+import Questionnaire from "pages/EditQuestionnaire/Questionnaire";
+import Courses from "pages/Courses/Course";
+import CourseEditor from "pages/Courses/CourseEditor";
+import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUtil";
+import TA from "pages/TA/TA";
+import TAEditor from "pages/TA/TAEditor";
+import { loadTAs } from "pages/TA/TAUtil";
 
 function App() {
   const router = createBrowserRouter([
@@ -37,6 +38,22 @@ function App() {
         { path: "login", element: <Login /> },
         { path: "logout", element: <ProtectedRoute element={<Logout />} /> },
         {path: "edit-questionnaire", element: <ProtectedRoute element={<Questionnaire />} /> },
+        {
+          path: "assignments",
+          element: <ProtectedRoute element={<Assignment />} leastPrivilegeRole={ROLE.TA} />, // Adjust as needed
+          children: [
+            {
+              path: "new",
+              element: <AssignmentEditor mode="create" />,
+              loader: loadAssignment,
+            },
+            {
+              path: "edit/:id",
+              element: <AssignmentEditor mode="update" />,
+              loader: loadAssignment,
+            },
+          ],
+        },
         {
           path: "users",
           element: <ProtectedRoute element={<Users />} leastPrivilegeRole={ROLE.TA} />,

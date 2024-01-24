@@ -14,6 +14,11 @@ import ErrorPage from "./router/ErrorPage";
 import NotFound from "./router/NotFound";
 import ProtectedRoute from "./router/ProtectedRoute";
 import { ROLE } from "./utils/interfaces";
+import AdministratorLayout from "./layout/Administrator";
+import NotFound from "./router/NotFound";
+import Participants from "pages/Participants/Participant";
+import ParticipantEditor from "pages/Participants/ParticipantEditor";
+import { loadParticipantDataRolesAndInstitutions } from "pages/Participants/participantUtil";
 import RootLayout from "layout/Root";
 import UserEditor from "./pages/Users/UserEditor";
 import Users from "./pages/Users/User";
@@ -26,6 +31,7 @@ import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUti
 import TA from "pages/TA/TA";
 import TAEditor from "pages/TA/TAEditor";
 import { loadTAs } from "pages/TA/TAUtil";
+
 
 function App() {
   const router = createBrowserRouter([
@@ -71,6 +77,37 @@ function App() {
           ],
         },
         {
+          path: "student_tasks/participants",
+          // TODO: The id here should be dynamic and should be received from the parent component
+          element: <Participants type="student_tasks" id={1} />,
+          children: [
+            {
+              path: "new",
+              element: <ParticipantEditor mode="create" type="student_tasks" />,
+              loader: loadParticipantDataRolesAndInstitutions,
+            },
+            {
+              path: "edit/:id",
+              element: <ParticipantEditor mode="update" type="student_tasks" />,
+              loader: loadParticipantDataRolesAndInstitutions,
+            },
+          ]
+        },
+        {
+          path: "courses/participants",
+          // TODO: The id here should be dynamic and should be received from the parent component
+          element: <Participants type="courses" id={1} />,
+          children: [
+            {
+              path: "new",
+              element: <ParticipantEditor mode="create" type="courses" />,
+              loader: loadParticipantDataRolesAndInstitutions,
+            },
+            {
+              path: "edit/:id",
+              element: <ParticipantEditor mode="update" type="courses" />,
+              loader: loadParticipantDataRolesAndInstitutions,
+            },
           // Routing for courses, so the URL will be https://<domain>.com/courses
           // This route is protected and only TAs can view it.
           path: "courses",

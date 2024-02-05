@@ -31,7 +31,6 @@ import TA from "pages/TA/TA";
 import TAEditor from "pages/TA/TAEditor";
 import { loadTAs } from "pages/TA/TAUtil";
 
-
 function App() {
   const router = createBrowserRouter([
     {

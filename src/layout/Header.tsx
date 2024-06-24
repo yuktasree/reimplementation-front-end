@@ -1,10 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Button, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { ROLE } from "../utils/interfaces";
 import { hasAllPrivilegesOf } from "../utils/util";
+import detective from '../assets/detective.png';
 
 /**
  * @author Ankur Mundra on May, 2023
@@ -16,6 +17,47 @@ const Header: React.FC = () => {
     (prev, next) => prev.isAuthenticated === next.isAuthenticated
   );
   const navigate = useNavigate();
+
+  const [visible, setVisible] = useState(true);
+
+  const CustomBtn = () => {
+    return (
+      <div style={{
+        backgroundColor: '#fff',
+        color: '#333',
+        padding: '10px 4px',
+        borderRadius: 4,
+        marginRight: 8
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }} >
+          <img src={detective} width={25} style={{ marginRight: 4 }}/>
+          <div>Anonymized View</div>
+          <button style={{
+            background: 'none',
+            border: 'none',
+            padding: 1,
+            marginLeft: 6,
+            backgroundColor: 'red',
+            borderRadius: 50,
+            color: "white",
+            width: 18,
+            fontSize: 10,
+            fontWeight: 800
+          }} onClick={() => setVisible(!visible)}>x</button>
+        </div>
+
+      </div>
+    );
+  };
+
+  // useEffect(() => {
+  //   console.log(visible, 'Changed');
+  // }, [visible]);
 
   return (
     <Fragment>
@@ -102,10 +144,23 @@ const Header: React.FC = () => {
                 <Nav.Link as={Link} to="/student_view">
                   Student View
                 </Nav.Link>
+                <Nav.Link as={Link} to="#" onClick={() => setVisible(!visible)}>
+                  Anonymized View
+                </Nav.Link>
               </Nav>
-              <Nav.Item className="text-light ps-md-3 pe-md-3">
-                User: {auth.user.full_name}
-              </Nav.Item>
+              {visible ? (<Nav.Item className="text-light ps-md-3 pe-md-3">
+                  User: {auth.user.full_name}
+                </Nav.Item>) : <Nav.Item className="text-light ps-md-3 pe-md-3">
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <CustomBtn /> User: Student 10592
+                  </div>
+                </Nav.Item>
+                }
               <Button variant="outline-light" onClick={() => navigate("/logout")}>
                 Logout
               </Button>

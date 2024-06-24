@@ -1,0 +1,119 @@
+/* Styles for the edit form container */
+.edit-form-container {
+  max-width: 95%;
+  margin: 20px 0 0 20px;
+  padding: 10px 40px 40px 40px;
+  background-color: #ffffff;
+}
+
+/* Styles for form fields */
+.form-field {
+  margin-bottom: 20px;
+  display: flex; /* Use flexbox */
+  align-items: center; /* Align items vertically */
+}
+
+/* Styles for form field labels */
+.form-field label {
+  flex-basis: 22%;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Styles for input fields */
+.form-field input[type="text"],
+.form-field input[type="password"],
+.form-field input[type="email"],
+.form-field select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 25%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Styles for buttons */
+.form-field button {
+  color: #6c757d;
+  cursor: pointer;
+  background-color: transparent;
+  border: #6c757d 1px solid;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Styles for button hover state */
+.form-field button:hover {
+  background-color: white !important;
+}
+
+/* Styles for button hover state */
+.form-field button:hover {
+  background-color: #0056b3;
+}
+
+/* Styles for h2 user profile */
+.h2-user-profile {
+  margin-bottom: 40px;
+}
+
+/* Styles for email options container */
+.email-options-container {
+  position: relative;
+  padding-right: 20px;
+  margin-bottom: 20px;
+}
+
+/* Styles for email options header */
+.email-options-container .email-options-header {
+  display: block;
+  margin-bottom: 0;
+}
+
+/* Styles for email options heading */
+.email-options-container .email-options-heading {
+  font-weight: bold;
+  display: block;
+}
+
+/* Styles for email instructions */
+.email-options-container .email-instructions {
+  display: block;
+  text-align: left;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+/* Ensure checkboxes are stacked vertically below the instruction */
+.email-options-container .checkbox-group {
+  display: block;
+  padding-top: 20px;
+}
+
+/* Styles for individual checkbox labels */
+.email-options-container .checkbox-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Styles for checkbox inputs */
+.email-options-container .checkbox-group label input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Styles for italics */
+.italics > p {
+  font-style: italic;
+  font-size: 11px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+/* Styles for custom column flex */
+.custom-column-flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}

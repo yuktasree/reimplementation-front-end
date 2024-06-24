@@ -1,5 +1,5 @@
 import React from "react";
-import {createBrowserRouter,Navigate,RouterProvider} from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import AdministratorLayout from "./layout/Administrator";
 import ManageUserTypes, { loader as loadUsers } from "./pages/Administrator/ManageUserTypes";
 import Login from "./pages/Authentication/Login";
@@ -8,7 +8,7 @@ import InstitutionEditor, { loadInstitution } from "./pages/Institutions/Institu
 import Institutions, { loadInstitutions } from "./pages/Institutions/Institutions";
 import RoleEditor, { loadAvailableRole } from "./pages/Roles/RoleEditor";
 import Roles, { loadRoles } from "./pages/Roles/Roles";
-import Assignment from './pages/Assignments/Assignment'
+import Assignment from "./pages/Assignments/Assignment";
 import AssignmentEditor from "./pages/Assignments/AssignmentEditor";
 import { loadAssignment } from "pages/Assignments/AssignmentUtil";
 import ErrorPage from "./router/ErrorPage";
@@ -30,6 +30,7 @@ import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUti
 import TA from "pages/TA/TA";
 import TAEditor from "pages/TA/TAEditor";
 import { loadTAs } from "pages/TA/TAUtil";
+import EditProfile from "pages/Profile/Edit";
 import Reviews from "pages/Reviews/reviews";
 import Email_the_author from "./pages/Email_the_author/email_the_author";
 import CreateTeams from "pages/Assignments/CreateTeams";
@@ -54,7 +55,7 @@ function App() {
           element: <CreateTeams />,
           loader: loadAssignment,
         },
-        
+
         {
           path: "assignments/edit/:id/assignreviewer",
           element: <AssignReviewer />,
@@ -126,7 +127,11 @@ function App() {
               element: <ParticipantEditor mode="update" type="student_tasks" />,
               loader: loadParticipantDataRolesAndInstitutions,
             },
-          ]
+          ],
+        },
+        {
+          path: "profile",
+          element: <ProtectedRoute element={<EditProfile />} />,
         },
         {
           path: "assignments/edit/:assignmentId/participants",
@@ -142,7 +147,7 @@ function App() {
               element: <ParticipantEditor mode="update" type="assignments" />,
               loader: loadParticipantDataRolesAndInstitutions,
             },
-          ]
+          ],
         },
         {
           path: "student_tasks/edit/:assignmentId/participants",
@@ -158,7 +163,7 @@ function App() {
               element: <ParticipantEditor mode="update" type="student_tasks" />,
               loader: loadParticipantDataRolesAndInstitutions,
             },
-          ]
+          ],
         },
         {
           path: "courses/participants",
@@ -208,7 +213,7 @@ function App() {
                   element: <TAEditor mode="create" />,
                   loader: loadTAs,
                 },
-              ]
+              ],
             },
           ], // Added the missing closing curly brace
         },
@@ -280,7 +285,7 @@ function App() {
       ],
     },
   ]);
-  
+
   return <RouterProvider router={router} />;
 }
 

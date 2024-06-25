@@ -13,14 +13,13 @@ import { ICourseResponse as ICourse } from "../../utils/interfaces";
 type Fn = (row: Row<ICourse>) => void;
 const columnHelper = createColumnHelper<ICourse>();
 export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, handleCopy: Fn) => [
-
   // Column for the course name
   columnHelper.accessor("name", {
     id: "name",
     header: "Name",
     enableSorting: true,
     enableColumnFilter: true,
-    enableGlobalFilter: false
+    enableGlobalFilter: false,
   }),
 
   // Column for the institution name
@@ -29,7 +28,7 @@ export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, ha
     header: "Institution",
     enableSorting: true,
     enableMultiSort: true,
-    enableGlobalFilter: false
+    enableGlobalFilter: false,
   }),
 
   // Column for the creation date
@@ -37,7 +36,7 @@ export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, ha
     header: "Creation Date",
     enableSorting: true,
     enableColumnFilter: false,
-    enableGlobalFilter: false
+    enableGlobalFilter: false,
   }),
 
   // Column for the last updated date
@@ -45,9 +44,9 @@ export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, ha
     header: "Updated Date",
     enableSorting: true,
     enableColumnFilter: false,
-    enableGlobalFilter: false
+    enableGlobalFilter: false,
   }),
-  
+
   // Actions column with edit, delete, TA, and copy buttons
   columnHelper.display({
     id: "actions",
@@ -68,7 +67,12 @@ export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, ha
         <Button variant="outline-info" size="sm" className="ms-sm-2" onClick={() => handleTA(row)}>
           <BsPersonXFill />
         </Button>
-        <Button variant="outline-primary" size="sm" className="ms-sm-2" onClick={() => handleCopy(row)}>
+        <Button
+          variant="outline-primary"
+          size="sm"
+          className="ms-sm-2"
+          onClick={() => handleCopy(row)}
+        >
           <MdContentCopy />
         </Button>
       </>

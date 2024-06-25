@@ -30,6 +30,7 @@ import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUti
 import TA from "pages/TA/TA";
 import TAEditor from "pages/TA/TAEditor";
 import { loadTAs } from "pages/TA/TAUtil";
+import ReviewTable from "./pages/ViewTeamGrades/ReviewTable";
 import EditProfile from "pages/Profile/Edit";
 import Reviews from "pages/Reviews/reviews";
 import Email_the_author from "./pages/Email_the_author/email_the_author";
@@ -49,7 +50,15 @@ function App() {
         { index: true, element: <ProtectedRoute element={<Home />} /> },
         { path: "login", element: <Login /> },
         { path: "logout", element: <ProtectedRoute element={<Logout />} /> },
-        { path: "edit-questionnaire", element: <ProtectedRoute element={<Questionnaire />} /> },
+        // Add the ViewTeamGrades route
+        {
+          path: "view-team-grades",
+          element: <ProtectedRoute element={<ReviewTable />} />,
+        },
+        {
+          path: "edit-questionnaire",
+          element: <ProtectedRoute element={<Questionnaire />} />,
+        },
         {
           path: "assignments/edit/:id/createteams",
           element: <CreateTeams />,
@@ -215,7 +224,7 @@ function App() {
                 },
               ],
             },
-          ], // Added the missing closing curly brace
+          ],
         },
         {
           path: "administrator",
@@ -266,13 +275,13 @@ function App() {
                   path: "new",
                   element: <Navigate to="/users/new" />,
                 },
+
                 {
                   path: "edit/:id",
                   element: <Navigate to="/users/edit/:id" />,
                 },
               ],
             },
-            // Add the "Questionnaire" route here
             {
               path: "questionnaire",
               element: <Questionnaire />,
@@ -280,8 +289,7 @@ function App() {
           ],
         },
         { path: "*", element: <NotFound /> },
-        // Add the "Questionnaire" route here if it's not under the administrator section
-        { path: "questionnaire", element: <Questionnaire /> },
+        { path: "questionnaire", element: <Questionnaire /> }, // Added the Questionnaire route
       ],
     },
   ]);

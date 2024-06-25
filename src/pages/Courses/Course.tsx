@@ -17,12 +17,12 @@ import { formatDate, mergeDataAndNames } from "./CourseUtil";
 // Courses Component: Displays and manages courses, including CRUD operations.
 
 /**
- * @author Atharva Thorve, on December, 2023 
+ * @author Atharva Thorve, on December, 2023
  * @author Mrityunjay Joshi on December, 2023
  */
 const Courses = () => {
   const { error, isLoading, data: CourseResponse, sendRequest: fetchCourses } = useAPI();
-  const { data: InstitutionResponse, sendRequest: fetchInstitutions} = useAPI();
+  const { data: InstitutionResponse, sendRequest: fetchInstitutions } = useAPI();
   const auth = useSelector(
     (state: RootState) => state.authentication,
     (prev, next) => prev.isAuthenticated === next.isAuthenticated
@@ -44,12 +44,19 @@ const Courses = () => {
 
   useEffect(() => {
     // ToDo: Fix this API in backend so that it the institution name along with the id. Similar to how it is done in users.
-    if (!showDeleteConfirmation.visible || !showCopyConfirmation.visible){
+    if (!showDeleteConfirmation.visible || !showCopyConfirmation.visible) {
       fetchCourses({ url: `/courses` });
       // ToDo: Remove this API call later after the above ToDo is completed
       fetchInstitutions({ url: `/institutions` });
     }
-  }, [fetchCourses, fetchInstitutions, location, showDeleteConfirmation.visible, auth.user.id, showCopyConfirmation.visible]);
+  }, [
+    fetchCourses,
+    fetchInstitutions,
+    location,
+    showDeleteConfirmation.visible,
+    auth.user.id,
+    showCopyConfirmation.visible,
+  ]);
 
   // Error alert for API errors
   useEffect(() => {
@@ -59,7 +66,10 @@ const Courses = () => {
   }, [error, dispatch]);
 
   // Callbacks for handling delete and copy confirmation modals
-  const onDeleteCourseHandler = useCallback(() => setShowDeleteConfirmation({ visible: false }), []);
+  const onDeleteCourseHandler = useCallback(
+    () => setShowDeleteConfirmation({ visible: false }),
+    []
+  );
 
   const onCopyCourseHandler = useCallback(() => setShowCopyConfirmation({ visible: false }), []);
 
@@ -75,7 +85,8 @@ const Courses = () => {
   );
 
   const onDeleteHandle = useCallback(
-    (row: TRow<ICourseResponse>) => setShowDeleteConfirmation({ visible: true, data: row.original }),
+    (row: TRow<ICourseResponse>) =>
+      setShowDeleteConfirmation({ visible: true, data: row.original }),
     []
   );
 
@@ -98,7 +109,7 @@ const Courses = () => {
     () => (isLoading || !InstitutionResponse?.data ? [] : InstitutionResponse.data),
     [InstitutionResponse?.data, isLoading]
   );
-  
+
   tableData = mergeDataAndNames(tableData, institutionData);
 
   const formattedTableData = tableData.map((item: any) => ({
@@ -108,7 +119,7 @@ const Courses = () => {
   }));
 
   // Render the Courses component
-  
+
   return (
     <>
       <Outlet />
@@ -121,13 +132,16 @@ const Courses = () => {
             <hr />
           </Row>
           <Row>
-            <Col md={{ span: 1, offset: 11 }} style={{paddingBottom: "10px"}}>
+            <Col md={{ span: 1, offset: 11 }} style={{ paddingBottom: "10px" }}>
               <Button variant="outline-success" onClick={() => navigate("new")}>
                 <RiHealthBookLine />
               </Button>
             </Col>
             {showDeleteConfirmation.visible && (
-              <DeleteCourse courseData={showDeleteConfirmation.data!} onClose={onDeleteCourseHandler} />
+              <DeleteCourse
+                courseData={showDeleteConfirmation.data!}
+                onClose={onDeleteCourseHandler}
+              />
             )}
             {showCopyConfirmation.visible && (
               <CopyCourse courseData={showCopyConfirmation.data!} onClose={onCopyCourseHandler} />

@@ -145,10 +145,10 @@ const Table: React.FC<TableProps> = ({
   };
 
   return (
-    <Container>
-      {
+    <>
+      <Container>
         <Row className="mb-md-2">
-          <Col md={{ span: 4, offset: 4 }}>
+          <Col md={{ span: 12 }}>
             {isGlobalFilterVisible && (
               <GlobalFilter filterValue={globalFilter} setFilterValue={setGlobalFilter} />
             )}
@@ -158,74 +158,76 @@ const Table: React.FC<TableProps> = ({
             {isGlobalFilterVisible ? " Hide" : " Show"}
           </span>{" "}
         </Row>
-      }
-      <Row>
-        <Col md={tableSize}>
-          <BTable striped hover responsive size="sm">
-            <thead className="table-secondary">
-              {getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <th key={header.id} colSpan={header.colSpan}>
-                        {header.isPlaceholder ? null : (
-                          <>
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick: header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                              {{
-                                asc: " 🔼",
-                                desc: " 🔽",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                            {showColumnFilter && header.column.getCanFilter() ? (
-                              <ColumnFilter column={header.column} />
-                            ) : null}
-                          </>
-                        )}
-                      </th>
-                    );
-                  })}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {getRowModel().rows.map((row) => {
-                return (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => {
+      </Container>
+      <Container>
+        <Row>
+          <Col md={tableSize}>
+            <BTable striped hover responsive size="sm">
+              <thead className="table-secondary">
+                {getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
                       return (
-                        <td key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
+                        <th key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder ? null : (
+                            <>
+                              <div
+                                {...{
+                                  className: header.column.getCanSort()
+                                    ? "cursor-pointer select-none"
+                                    : "",
+                                  onClick: header.column.getToggleSortingHandler(),
+                                }}
+                              >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {{
+                                  asc: " 🔼",
+                                  desc: " 🔽",
+                                }[header.column.getIsSorted() as string] ?? null}
+                              </div>
+                              {showColumnFilter && header.column.getCanFilter() ? (
+                                <ColumnFilter column={header.column} />
+                              ) : null}
+                            </>
+                          )}
+                        </th>
                       );
                     })}
                   </tr>
-                );
-              })}
-            </tbody>
-          </BTable>
-          {showPagination && (
-            <Pagination
-              nextPage={nextPage}
-              previousPage={previousPage}
-              canNextPage={getCanNextPage}
-              canPreviousPage={getCanPreviousPage}
-              setPageIndex={setPageIndex}
-              setPageSize={setPageSize}
-              getPageCount={getPageCount}
-              getState={getState}
-            />
-          )}
-        </Col>
-      </Row>
-    </Container>
+                ))}
+              </thead>
+              <tbody>
+                {getRowModel().rows.map((row) => {
+                  return (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => {
+                        return (
+                          <td key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </BTable>
+            {showPagination && (
+              <Pagination
+                nextPage={nextPage}
+                previousPage={previousPage}
+                canNextPage={getCanNextPage}
+                canPreviousPage={getCanPreviousPage}
+                setPageIndex={setPageIndex}
+                setPageSize={setPageSize}
+                getPageCount={getPageCount}
+                getState={getState}
+              />
+            )}
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

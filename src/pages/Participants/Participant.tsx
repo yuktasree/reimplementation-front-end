@@ -17,7 +17,7 @@ import { participantColumns as PARPTICIPANT_COLUMNS } from "./participantColumns
  */
 
 interface IModel {
-  type: "student_tasks" | "courses"|"assignments";
+  type: "student_tasks" | "courses";
   id: Number;
 }
 

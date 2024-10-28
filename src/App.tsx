@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {createBrowserRouter,Navigate,RouterProvider} from "react-router-dom";
 import AdministratorLayout from "./layout/Administrator";
 import ManageUserTypes, { loader as loadUsers } from "./pages/Administrator/ManageUserTypes";
 import Login from "./pages/Authentication/Login";
@@ -8,7 +8,7 @@ import InstitutionEditor, { loadInstitution } from "./pages/Institutions/Institu
 import Institutions, { loadInstitutions } from "./pages/Institutions/Institutions";
 import RoleEditor, { loadAvailableRole } from "./pages/Roles/RoleEditor";
 import Roles, { loadRoles } from "./pages/Roles/Roles";
-import Assignment from "./pages/Assignments/Assignment";
+import Assignment from './pages/Assignments/Assignment'
 import AssignmentEditor from "./pages/Assignments/AssignmentEditor";
 import { loadAssignment } from "pages/Assignments/AssignmentUtil";
 import ErrorPage from "./router/ErrorPage";
@@ -30,16 +30,7 @@ import { loadCourseInstructorDataAndInstitutions } from "pages/Courses/CourseUti
 import TA from "pages/TA/TA";
 import TAEditor from "pages/TA/TAEditor";
 import { loadTAs } from "pages/TA/TAUtil";
-import ReviewTable from "./pages/ViewTeamGrades/ReviewTable";
-import EditProfile from "pages/Profile/Edit";
-import Reviews from "pages/Reviews/reviews";
-import Email_the_author from "./pages/Email_the_author/email_the_author";
-import CreateTeams from "pages/Assignments/CreateTeams";
-import AssignReviewer from "pages/Assignments/AssignReviewer";
-import ViewSubmissions from "pages/Assignments/ViewSubmissions";
-import ViewScores from "pages/Assignments/ViewScores";
-import ViewReports from "pages/Assignments/ViewReports";
-import ViewDelayedJobs from "pages/Assignments/ViewDelayedJobs";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -50,46 +41,7 @@ function App() {
         { index: true, element: <ProtectedRoute element={<Home />} /> },
         { path: "login", element: <Login /> },
         { path: "logout", element: <ProtectedRoute element={<Logout />} /> },
-        // Add the ViewTeamGrades route
-        {
-          path: "view-team-grades",
-          element: <ProtectedRoute element={<ReviewTable />} />,
-        },
-        {
-          path: "edit-questionnaire",
-          element: <ProtectedRoute element={<Questionnaire />} />,
-        },
-        {
-          path: "assignments/edit/:id/createteams",
-          element: <CreateTeams />,
-          loader: loadAssignment,
-        },
-
-        {
-          path: "assignments/edit/:id/assignreviewer",
-          element: <AssignReviewer />,
-          loader: loadAssignment,
-        },
-        {
-          path: "assignments/edit/:id/viewsubmissions",
-          element: <ViewSubmissions />,
-          loader: loadAssignment,
-        },
-        {
-          path: "assignments/edit/:id/viewscores",
-          element: <ViewScores />,
-          loader: loadAssignment,
-        },
-        {
-          path: "assignments/edit/:id/viewreports",
-          element: <ViewReports />,
-          loader: loadAssignment,
-        },
-        {
-          path: "assignments/edit/:id/viewdelayedjobs",
-          element: <ViewDelayedJobs />,
-          loader: loadAssignment,
-        },
+        { path: "edit-questionnaire", element: <ProtectedRoute element={<Questionnaire />} /> },
         {
           path: "assignments",
           element: <ProtectedRoute element={<Assignment />} leastPrivilegeRole={ROLE.TA} />,
@@ -136,43 +88,7 @@ function App() {
               element: <ParticipantEditor mode="update" type="student_tasks" />,
               loader: loadParticipantDataRolesAndInstitutions,
             },
-          ],
-        },
-        {
-          path: "profile",
-          element: <ProtectedRoute element={<EditProfile />} />,
-        },
-        {
-          path: "assignments/edit/:assignmentId/participants",
-          element: <Participants type="student_tasks" id={1} />,
-          children: [
-            {
-              path: "new",
-              element: <ParticipantEditor mode="create" type="assignments" />,
-              loader: loadParticipantDataRolesAndInstitutions,
-            },
-            {
-              path: "edit/:id",
-              element: <ParticipantEditor mode="update" type="assignments" />,
-              loader: loadParticipantDataRolesAndInstitutions,
-            },
-          ],
-        },
-        {
-          path: "student_tasks/edit/:assignmentId/participants",
-          element: <Participants type="student_tasks" id={1} />,
-          children: [
-            {
-              path: "new",
-              element: <ParticipantEditor mode="create" type="student_tasks" />,
-              loader: loadParticipantDataRolesAndInstitutions,
-            },
-            {
-              path: "edit/:id",
-              element: <ParticipantEditor mode="update" type="student_tasks" />,
-              loader: loadParticipantDataRolesAndInstitutions,
-            },
-          ],
+          ]
         },
         {
           path: "courses/participants",
@@ -189,14 +105,6 @@ function App() {
               loader: loadParticipantDataRolesAndInstitutions,
             },
           ],
-        },
-        {
-          path: "reviews",
-          element: <Reviews/>,
-        },
-        {
-          path: "email_the_author",
-          element: <Email_the_author/>,
         },
         // Fixed the missing comma and added an opening curly brace
         {
@@ -222,9 +130,13 @@ function App() {
                   element: <TAEditor mode="create" />,
                   loader: loadTAs,
                 },
-              ],
+              ]
             },
-          ],
+            // {
+            //   path: "statistics",
+            //   element: <CourseStatistics/>,
+            // }
+          ], // Added the missing closing curly brace
         },
         {
           path: "administrator",
@@ -275,13 +187,13 @@ function App() {
                   path: "new",
                   element: <Navigate to="/users/new" />,
                 },
-
                 {
                   path: "edit/:id",
                   element: <Navigate to="/users/edit/:id" />,
                 },
               ],
             },
+            // Add the "Questionnaire" route here
             {
               path: "questionnaire",
               element: <Questionnaire />,
@@ -289,11 +201,12 @@ function App() {
           ],
         },
         { path: "*", element: <NotFound /> },
-        { path: "questionnaire", element: <Questionnaire /> }, // Added the Questionnaire route
+        // Add the "Questionnaire" route here if it's not under the administrator section
+        { path: "questionnaire", element: <Questionnaire /> },
       ],
     },
   ]);
-
+  
   return <RouterProvider router={router} />;
 }
 

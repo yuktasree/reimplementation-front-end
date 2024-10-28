@@ -2,7 +2,7 @@ import { Row as TRow } from "@tanstack/react-table";
 import Table from "components/Table/Table";
 import useAPI from "hooks/useAPI";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Form, Spinner } from "react-bootstrap";
 import { RiHealthBookLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -12,114 +12,87 @@ import { ICourseResponse, ROLE } from "../../utils/interfaces";
 import { courseColumns as COURSE_COLUMNS } from "./CourseColumns";
 import CopyCourse from "./CourseCopy";
 import DeleteCourse from "./CourseDelete";
-import { formatDate, mergeDataAndNames } from "./CourseUtil";
+import { formatDate, mergeDataAndNamesAndInstructors } from "./CourseUtil";
 
 // Courses Component: Displays and manages courses, including CRUD operations.
-
-/**
- * @author Atharva Thorve, on December, 2023
- * @author Mrityunjay Joshi on December, 2023
- */
 const Courses = () => {
+  // Hooks for API requests
   const { error, isLoading, data: CourseResponse, sendRequest: fetchCourses } = useAPI();
   const { data: InstitutionResponse, sendRequest: fetchInstitutions } = useAPI();
-  const auth = useSelector(
-    (state: RootState) => state.authentication,
-    (prev, next) => prev.isAuthenticated === next.isAuthenticated
-  );
+  const { data: InstructorsResponse, sendRequest: fetchInstructors } = useAPI();
+  
+  const auth = useSelector((state: RootState) => state.authentication);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  
+  // Filters for dates
+  const [creationDateFilter, setCreationDateFilter] = useState("");
+  const [updatedDateFilter, setUpdatedDateFilter] = useState("");
+  
+  // States for delete and copy confirmation modals
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<{ visible: boolean; data?: ICourseResponse }>({ visible: false });
+  const [showCopyConfirmation, setShowCopyConfirmation] = useState<{ visible: boolean; data?: ICourseResponse }>({ visible: false });
 
-  // State for delete and copy confirmation modals
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<{
-    visible: boolean;
-    data?: ICourseResponse;
-  }>({ visible: false });
-
-  const [showCopyConfirmation, setShowCopyConfirmation] = useState<{
-    visible: boolean;
-    data?: ICourseResponse;
-  }>({ visible: false });
-
+  // Fetch data on component mount and when modals close
   useEffect(() => {
-    // ToDo: Fix this API in backend so that it the institution name along with the id. Similar to how it is done in users.
-    if (!showDeleteConfirmation.visible || !showCopyConfirmation.visible) {
+    if (!showDeleteConfirmation.visible && !showCopyConfirmation.visible) {
       fetchCourses({ url: `/courses` });
-      // ToDo: Remove this API call later after the above ToDo is completed
       fetchInstitutions({ url: `/institutions` });
+      fetchInstructors({ url: `/instructors` });
     }
-  }, [
-    fetchCourses,
-    fetchInstitutions,
-    location,
-    showDeleteConfirmation.visible,
-    auth.user.id,
-    showCopyConfirmation.visible,
-  ]);
+  }, [fetchCourses, fetchInstitutions, fetchInstructors, location, showDeleteConfirmation.visible, showCopyConfirmation.visible]);
 
-  // Error alert for API errors
+  // Handle API errors
   useEffect(() => {
     if (error) {
       dispatch(alertActions.showAlert({ variant: "danger", message: error }));
     }
   }, [error, dispatch]);
 
-  // Callbacks for handling delete and copy confirmation modals
-  const onDeleteCourseHandler = useCallback(
-    () => setShowDeleteConfirmation({ visible: false }),
-    []
-  );
-
+  // Handlers for modal visibility
+  const onDeleteCourseHandler = useCallback(() => setShowDeleteConfirmation({ visible: false }), []);
   const onCopyCourseHandler = useCallback(() => setShowCopyConfirmation({ visible: false }), []);
+  
+  // Handlers for navigating to edit and TA pages
+  const onEditHandle = useCallback((row: TRow<ICourseResponse>) => navigate(`edit/${row.original.id}`), [navigate]);
+  const onTAHandle = useCallback((row: TRow<ICourseResponse>) => navigate(`${row.original.id}/tas`), [navigate]);
+  
+  // Handlers for delete and copy actions
+  const onDeleteHandle = useCallback((row: TRow<ICourseResponse>) => setShowDeleteConfirmation({ visible: true, data: row.original }), []);
+  const onCopyHandle = useCallback((row: TRow<ICourseResponse>) => setShowCopyConfirmation({ visible: true, data: row.original }), []);
+  
+  // Define table columns using memoization
+  const tableColumns = useMemo(() => COURSE_COLUMNS(onEditHandle, onDeleteHandle, onTAHandle, onCopyHandle), [onDeleteHandle, onEditHandle, onTAHandle, onCopyHandle]);
+  
+  // Prepare table data
+  let tableData = useMemo(() => (isLoading || !CourseResponse?.data ? [] : CourseResponse.data), [CourseResponse?.data, isLoading]);
+  const institutionData = useMemo(() => (isLoading || !InstitutionResponse?.data ? [] : InstitutionResponse.data), [InstitutionResponse?.data, isLoading]);
+  const instructorData = useMemo(() => (isLoading || !InstructorsResponse?.data ? [] : InstructorsResponse.data), [InstructorsResponse?.data, isLoading]);
 
-  // Callbacks for navigation and modal handling
-  const onEditHandle = useCallback(
-    (row: TRow<ICourseResponse>) => navigate(`edit/${row.original.id}`),
-    [navigate]
-  );
-
-  const onTAHandle = useCallback(
-    (row: TRow<ICourseResponse>) => navigate(`${row.original.id}/tas`),
-    [navigate]
-  );
-
-  const onDeleteHandle = useCallback(
-    (row: TRow<ICourseResponse>) =>
-      setShowDeleteConfirmation({ visible: true, data: row.original }),
-    []
-  );
-
-  const onCopyHandle = useCallback(
-    (row: TRow<ICourseResponse>) => setShowCopyConfirmation({ visible: true, data: row.original }),
-    []
-  );
-
-  const tableColumns = useMemo(
-    () => COURSE_COLUMNS(onEditHandle, onDeleteHandle, onTAHandle, onCopyHandle),
-    [onDeleteHandle, onEditHandle, onTAHandle, onCopyHandle]
-  );
-
-  let tableData = useMemo(
-    () => (isLoading || !CourseResponse?.data ? [] : CourseResponse.data),
-    [CourseResponse?.data, isLoading]
-  );
-
-  const institutionData = useMemo(
-    () => (isLoading || !InstitutionResponse?.data ? [] : InstitutionResponse.data),
-    [InstitutionResponse?.data, isLoading]
-  );
-
-  tableData = mergeDataAndNames(tableData, institutionData);
-
+  tableData = mergeDataAndNamesAndInstructors(tableData, institutionData, instructorData);
+  
+  // Format table data dates
   const formattedTableData = tableData.map((item: any) => ({
     ...item,
     created_at: formatDate(item.created_at),
     updated_at: formatDate(item.updated_at),
   }));
 
-  // Render the Courses component
+  // Filtered table data based on date filters
+  const filteredData = useMemo(() => {
+    return formattedTableData.filter((item: any) => {
+      const itemCreationDate = item.created_at?.split("T")[0];
+      const itemUpdatedDate = item.updated_at?.split("T")[0];
 
+      const matchesCreationDate = creationDateFilter ? itemCreationDate === creationDateFilter : true;
+      const matchesUpdatedDate = updatedDateFilter ? itemUpdatedDate === updatedDateFilter : true;
+
+      return matchesCreationDate && matchesUpdatedDate;
+    });
+  }, [formattedTableData, creationDateFilter, updatedDateFilter]);
+
+  // Render the Courses component
   return (
     <>
       <Outlet />
@@ -131,33 +104,43 @@ const Courses = () => {
             </Col>
             <hr />
           </Row>
-          <Row>
-            <Col md={{ span: 1, offset: 11 }} style={{ paddingBottom: "10px" }}>
-              <Button variant="outline-success" onClick={() => navigate("new")}>
-                <RiHealthBookLine />
+
+          <Row className="mb-3">
+            <Col md={{ span: 4, offset: 8 }} className="text-end">
+              <Button variant="outline-success" onClick={() => navigate("new")} aria-label="Add New Course">
+                <RiHealthBookLine /> Add Course
               </Button>
             </Col>
-            {showDeleteConfirmation.visible && (
-              <DeleteCourse
-                courseData={showDeleteConfirmation.data!}
-                onClose={onDeleteCourseHandler}
-              />
-            )}
-            {showCopyConfirmation.visible && (
-              <CopyCourse courseData={showCopyConfirmation.data!} onClose={onCopyCourseHandler} />
-            )}
           </Row>
-          <Row>
-            <Table
-              showGlobalFilter={false}
-              data={formattedTableData}
-              columns={tableColumns}
-              columnVisibility={{
-                id: false,
-                institution: auth.user.role === ROLE.SUPER_ADMIN.valueOf(),
-              }}
-            />
-          </Row>
+
+          {isLoading ? (
+            <Row className="justify-content-center">
+              <Col className="text-center">
+                <Spinner animation="border" role="status" />
+                <span className="ms-2">Loading courses...</span>
+              </Col>
+            </Row>
+          ) : (
+            <>
+              {showDeleteConfirmation.visible && (
+                <DeleteCourse courseData={showDeleteConfirmation.data!} onClose={onDeleteCourseHandler} />
+              )}
+              {showCopyConfirmation.visible && (
+                <CopyCourse courseData={showCopyConfirmation.data!} onClose={onCopyCourseHandler} />
+              )}
+              <Row>
+                <Table
+                  showGlobalFilter={false}
+                  data={filteredData}
+                  columns={tableColumns}
+                  columnVisibility={{
+                    id: false,
+                    institution: auth.user.role === ROLE.SUPER_ADMIN.valueOf(),
+                  }}
+                />
+              </Row>
+            </>
+          )}
         </Container>
       </main>
     </>

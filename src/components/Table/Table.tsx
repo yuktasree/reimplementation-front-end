@@ -9,13 +9,12 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Col, Container, Row, Table as BTable } from "react-bootstrap";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {Col, Container, Row, Table as BTable} from "react-bootstrap";
 import ColumnFilter from "./ColumnFilter";
 import GlobalFilter from "./GlobalFilter";
 import Pagination from "./Pagination";
 import RowSelectCheckBox from "./RowSelectCheckBox";
-import { FaSearch } from "react-icons/fa";
 
 /**
  * @author Ankur Mundra on May, 2023
@@ -35,7 +34,7 @@ interface TableProps {
 const Table: React.FC<TableProps> = ({
   data: initialData,
   columns,
-  showGlobalFilter = false,
+  showGlobalFilter = true,
   showColumnFilter = true,
   showPagination = true,
   onSelectionChange,
@@ -48,7 +47,7 @@ const Table: React.FC<TableProps> = ({
       header: ({ table }: any) => {
         return (
           <RowSelectCheckBox
-            {...{
+            {...{ 
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -79,7 +78,6 @@ const Table: React.FC<TableProps> = ({
   const [globalFilter, setGlobalFilter] = useState<string | number>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibilityState, setColumnVisibilityState] = useState(columnVisibility);
-  const [isGlobalFilterVisible, setIsGlobalFilterVisible] = useState(showGlobalFilter); // State for global filter visibility
 
   const selectable = typeof onSelectionChange === "function";
   const onSelectionChangeRef = useRef<any>(onSelectionChange);
@@ -100,7 +98,6 @@ const Table: React.FC<TableProps> = ({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibilityState,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -140,94 +137,82 @@ const Table: React.FC<TableProps> = ({
     handleSelectionChange?.(selectedData);
   }, [flatRows]);
 
-  const toggleGlobalFilter = () => {
-    setIsGlobalFilterVisible(!isGlobalFilterVisible);
-  };
-
   return (
-    <>
-      <Container>
+    <Container>
+      {showGlobalFilter && (
         <Row className="mb-md-2">
-          <Col md={{ span: 12 }}>
-            {isGlobalFilterVisible && (
-              <GlobalFilter filterValue={globalFilter} setFilterValue={setGlobalFilter} />
-            )}
+          <Col md={{ span: 4, offset: 4 }}>
+            <GlobalFilter filterValue={globalFilter} setFilterValue={setGlobalFilter} />{" "}
           </Col>
-          <span style={{ marginLeft: "5px" }} onClick={toggleGlobalFilter}>
-            <FaSearch style={{ cursor: "pointer" }} />
-            {isGlobalFilterVisible ? " Hide" : " Show"}
-          </span>{" "}
         </Row>
-      </Container>
-      <Container>
-        <Row>
-          <Col md={tableSize}>
-            <BTable striped hover responsive size="sm">
-              <thead className="table-secondary">
-                {getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+      )}
+      <Row>
+        <Col md={tableSize}>
+          <BTable striped hover responsive size="sm">
+            <thead className="table-secondary">
+              {getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <th key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder ? null : (
+                          <>
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick: header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                              {{
+                                asc: " 🔼",
+                                desc: " 🔽",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                            {showColumnFilter && header.column.getCanFilter() ? (
+                              <ColumnFilter column={header.column} />
+                            ) : null}
+                          </>
+                        )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {getRowModel().rows.map((row) => {
+                return (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
                       return (
-                        <th key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder ? null : (
-                            <>
-                              <div
-                                {...{
-                                  className: header.column.getCanSort()
-                                    ? "cursor-pointer select-none"
-                                    : "",
-                                  onClick: header.column.getToggleSortingHandler(),
-                                }}
-                              >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                {{
-                                  asc: " 🔼",
-                                  desc: " 🔽",
-                                }[header.column.getIsSorted() as string] ?? null}
-                              </div>
-                              {showColumnFilter && header.column.getCanFilter() ? (
-                                <ColumnFilter column={header.column} />
-                              ) : null}
-                            </>
-                          )}
-                        </th>
+                        <td key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
                       );
                     })}
                   </tr>
-                ))}
-              </thead>
-              <tbody>
-                {getRowModel().rows.map((row) => {
-                  return (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </BTable>
-            {showPagination && (
-              <Pagination
-                nextPage={nextPage}
-                previousPage={previousPage}
-                canNextPage={getCanNextPage}
-                canPreviousPage={getCanPreviousPage}
-                setPageIndex={setPageIndex}
-                setPageSize={setPageSize}
-                getPageCount={getPageCount}
-                getState={getState}
-              />
-            )}
-          </Col>
-        </Row>
-      </Container>
-    </>
+                );
+              })}
+            </tbody>
+          </BTable>
+          {showPagination && (
+            <Pagination
+              nextPage={nextPage}
+              previousPage={previousPage}
+              canNextPage={getCanNextPage}
+              canPreviousPage={getCanPreviousPage}
+              setPageIndex={setPageIndex}
+              setPageSize={setPageSize}
+              getPageCount={getPageCount}
+              getState={getState}
+            />
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

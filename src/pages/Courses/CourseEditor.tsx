@@ -15,9 +15,9 @@ import { IEditor, ROLE } from "../../utils/interfaces";
 import { ICourseFormValues, courseVisibility, noSpacesSpecialCharsQuotes, transformCourseRequest } from "./CourseUtil";
 
 /**
- * @author Aniket Singh Shaktawat, on March, 2024 
- * @author Pankhi Saini on March, 2024
- * @author Siddharth Shah on March, 2024
+ * @author Suraj Raghu Kumar, on Oct, 2024 
+ * @author Yuktasree Muppala on Oct, 2024
+ * @author Harvardhan Patil on Oct, 2024
  */
 
 // CourseEditor Component: Modal for creating or updating a course.
@@ -76,7 +76,7 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
       const instructorsList: IFormOption[] = [{ label: 'Select an Instructor', value: '' }];
       console.log('Selected Institution ID:', selectedInstitutionId)
       
-      const onlyInstructors = users.data.filter((user: any) => (user.role.name === 'Instructor')); // Filter by institution
+      const onlyInstructors = users.data.filter((user: any) => (user.role.name === 'Instructor')&& (user.institution.id === selectedInstitutionId)); // Filter by institution
       console.log('Users:', users.data)
       onlyInstructors.forEach((instructor: any) => {
         instructorsList.push({ label: instructor.name, value: String(instructor.id) });

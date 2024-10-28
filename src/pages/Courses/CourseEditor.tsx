@@ -14,7 +14,6 @@ import { RootState } from "../../store/store";
 import { IEditor, ROLE } from "../../utils/interfaces";
 import { ICourseFormValues, courseVisibility, noSpacesSpecialCharsQuotes, transformCourseRequest } from "./CourseUtil";
 
-
 /**
  * @author Aniket Singh Shaktawat, on March, 2024 
  * @author Pankhi Saini on March, 2024
@@ -26,7 +25,7 @@ const initialValues: ICourseFormValues = {
   name: "",
   directory: "",
   private: [],
-  institution_id: -1,
+  institution_id: 0,
   instructor_id: -1,
   info: "",
 };
@@ -46,7 +45,6 @@ const validationSchema = Yup.object({
 });
 
 const CourseEditor: React.FC<IEditor> = ({ mode }) => {
-
   // API hook for making requests
   const { data: courseResponse, error: courseError, sendRequest } = useAPI();
   const { data: users, sendRequest: fetchusers } = useAPI();
@@ -65,28 +63,38 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
   }
 
   const [filteredInstructors, setFilteredInstructors] = useState<IFormOption[]>([]);
-
+  const [selectedInstitutionId, setSelectedInstitutionId] = useState<number | null>(null); // New state for selected institution
 
   useEffect(() => {
     fetchusers({url:'/users'});
   }, [fetchusers]);
 
-// useEffect hook to update the instructors list whenever the 'users' data changes
+  // Filter instructors based on selected institution
   useEffect(() => {
+    
     if (users) {
       const instructorsList: IFormOption[] = [{ label: 'Select an Instructor', value: '' }];
-      const onlyInstructors = users.data.filter((user: any) => user.role.name === 'Instructor');
-      // Iterate over the filtered instructors to create an option object for each
-      // and add it to the 'instructorsList'
+      console.log('Selected Institution ID:', selectedInstitutionId)
+      
+      const onlyInstructors = users.data.filter((user: any) => (user.role.name === 'Instructor')); // Filter by institution
+      console.log('Users:', users.data)
       onlyInstructors.forEach((instructor: any) => {
         instructorsList.push({ label: instructor.name, value: String(instructor.id) });
       });
-  
       setFilteredInstructors(instructorsList);
+      
     }
-  }, [users]);
+  }, [users, selectedInstitutionId]); // Re-run this effect when users or selectedInstitutionId changes
+  
+  // Handle institution selection change
+  const handleInstitutionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const institutionId = Number(event.target.value);
+    
 
-  initialValues.institution_id = auth.user.institution_id;
+    setSelectedInstitutionId(institutionId); // Update the selected institution
+  };
+  
+  initialValues.institution_id = -1;
 
   // Close the modal if the course is updated successfully and navigate to the courses page
   useEffect(() => {
@@ -142,10 +150,11 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
           initialValues={mode === "update" ? courseData : initialValues}
           onSubmit={onSubmit}
           validationSchema={validationSchema}
-          validateOnChange={false}
+          validateOnChange={true}
           enableReinitialize={true}
         >
           {(formik) => {
+
             return (
               <Form>
                 <FormSelect
@@ -156,6 +165,8 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
                   inputGroupPrepend={
                     <InputGroup.Text id="course-inst-prep">Institution</InputGroup.Text>
                   }
+                  
+                  onChange={handleInstitutionChange} // Add onChange to handle institution selection
                 />
                 <FormSelect
                   controlId="course-instructor"

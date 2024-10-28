@@ -5,8 +5,8 @@ import { MdContentCopy, MdDelete } from "react-icons/md";
 import { ICourseResponse as ICourse } from "../../utils/interfaces";
 
 /**
- * @author Atharva Thorve, on December, 2023
- * @author Mrityunjay Joshi on December, 2023
+ * @author Suraj Raghu Kumar on October 27, 2023
+ * 
  */
 
 // Course Columns Configuration
@@ -14,17 +14,16 @@ type Fn = (row: Row<ICourse>) => void;
 
 const columnHelper = createColumnHelper<ICourse>();
 
-export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, handleCopy: Fn) => [
+export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, handleCopy: Fn, handleShowDetails:(course: ICourse) => void) => [
   // Column for the course name
   columnHelper.accessor("name", {
     id: "name",
-    header: () => <span style={{ fontWeight: 'bold' }}>Course Name</span>,
+    header: "Name",
+    cell: (info) => <a href="#" onClick={() => handleShowDetails(info.row.original)}>{info.getValue()}</a>,
     enableSorting: true,
     enableColumnFilter: true,
-    enableGlobalFilter: false,
-    cell: info => <span>{info.getValue() || <Badge bg="secondary">N/A</Badge>}</span>
+    enableGlobalFilter: false
   }),
-
   // Column for the institution name
   columnHelper.accessor("institution.name", {
     id: "institution",

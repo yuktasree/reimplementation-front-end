@@ -21,9 +21,9 @@ import { ICourseResponse as ICourse } from "../../utils/interfaces";
 // Courses Component: Displays and manages courses, including CRUD operations.
 
 /**
- * @author Aniket Singh Shaktawat, on March, 2024 
- * @author Pankhi Saini on March, 2024
- * @author Siddharth Shah on March, 2024
+   @author Suraj Raghu Kumar, on Oct, 2024 
+ * @author Yuktasree Muppala on Oct, 2024
+ * @author Harvardhan Patil on Oct, 2024
  */
 const Courses = () => {
   const { error, isLoading, data: CourseResponse, sendRequest: fetchCourses } = useAPI();
@@ -98,8 +98,9 @@ const Courses = () => {
     (row: TRow<ICourseResponse>) => setShowCopyConfirmation({ visible: true, data: row.original }),
     []
   );
-
+  
   const tableColumns = useMemo(
+    
     () => COURSE_COLUMNS(onEditHandle, onDeleteHandle, onTAHandle, onCopyHandle, handleShowDetails),
     [onDeleteHandle, onEditHandle, onTAHandle, onCopyHandle, handleShowDetails]
   );
@@ -147,42 +148,50 @@ const Courses = () => {
       <Outlet />
       <main>
         <Container fluid className="px-md-4">
-          <Row className="mt-md-2 mb-md-2">
+          <Row className="mt-4 mb-4">
             <Col className="text-center">
-              <h1>
-              {auth.user.role === ROLE.INSTRUCTOR.valueOf() ? (
-                <>
-                  Instructed by: {auth.user.full_name}
-                </>
-              ) : auth.user.role === ROLE.TA.valueOf() ? (
-                <>
-                  Assisted by: {auth.user.full_name}
-                </>
-              ) : (
-                <>
-                  Manage Courses
-                </>
-              )}
+              <h1 className="text-dark" style={{ fontSize: '2rem', fontWeight: '600' }}>
+                {auth.user.role === ROLE.INSTRUCTOR.valueOf() ? (
+                  <>Instructed by: {auth.user.full_name}</>
+                ) : auth.user.role === ROLE.TA.valueOf() ? (
+                  <>Assisted by: {auth.user.full_name}</>
+                ) : (
+                  <>Manage Courses</>
+                )}
               </h1>
             </Col>
             <hr />
           </Row>
-          <Row>
 
-          <Row className="mb-3">
-            <Col md={{ span: 4, offset: 8 }} className="text-end">
-              <Button variant="outline-success" onClick={() => navigate("new")} aria-label="Add New Course">
-                <RiHealthBookLine /> Add Course
+          <Row className="mb-4 justify-content-end">
+            <Col xs="auto">
+              <Button
+                variant="success"
+                size="lg"
+                onClick={() => navigate("new")}
+                aria-label="Add New Course"
+                style={{
+                  fontSize: '1rem',
+                  padding: '8px 24px',
+                  borderRadius: '10px',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <RiHealthBookLine style={{ marginRight: '8px', fontSize: '1.4rem' }} />
+                Add Course
               </Button>
             </Col>
           </Row>
-            {showDeleteConfirmation.visible && (
-              <DeleteCourse courseData={showDeleteConfirmation.data!} onClose={onDeleteCourseHandler} />
-            )}
-            {showCopyConfirmation.visible && (
-              <CopyCourse courseData={showCopyConfirmation.data!} onClose={onCopyCourseHandler} />
-            )}
-          </Row>
+
+          {showDeleteConfirmation.visible && (
+            <DeleteCourse courseData={showDeleteConfirmation.data!} onClose={onDeleteCourseHandler} />
+          )}
+          {showCopyConfirmation.visible && (
+            <CopyCourse courseData={showCopyConfirmation.data!} onClose={onCopyCourseHandler} />
+          )}
+
           <Row>
             <Table
               showGlobalFilter={false}
@@ -197,9 +206,11 @@ const Courses = () => {
           </Row>
         </Container>
       </main>
+
       <CourseDetails show={showDetailsModal} onHide={() => setShowDetailsModal(false)} course={selectedCourse} />
     </>
-  );
+);
+
 };
 
 export default Courses;

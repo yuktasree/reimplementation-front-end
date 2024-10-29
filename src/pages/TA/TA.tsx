@@ -20,6 +20,7 @@ import DeleteTA from "./TADelete";
  */
 const TAs = () => {
   const { error, isLoading, data: TAResponse, sendRequest: fetchTAs } = useAPI();
+  
   const auth = useSelector(
     (state: RootState) => state.authentication,
     (prev, next) => prev.isAuthenticated === next.isAuthenticated
@@ -33,13 +34,17 @@ const TAs = () => {
     visible: boolean;
     data?: ITAResponse;
   }>({ visible: false });
-
+  
+  
   useEffect(() => {
     const { courseId } = params;
+    
+    
     // ToDo: This API in the backend is not working properly needs to be fixed.
     if (!showDeleteConfirmation.visible) fetchTAs({ url: `/courses/${courseId}/tas` });
+    
   }, [fetchTAs, location, showDeleteConfirmation.visible, auth.user.id, params]);
-
+  
   // Error alert
   useEffect(() => {
     if (error) {
@@ -63,9 +68,9 @@ const TAs = () => {
     () => (isLoading || !TAResponse?.data ? [] : TAResponse.data),
     [TAResponse?.data, isLoading]
   );
-
+  
   const handleClose = () => navigate(location.state?.from ? location.state.from : "/courses");
-
+  
   return (
     // Unable to use fullscreen modal with proper size breakdowns since the react-bootstrap version is below 5.
     // Therefore the max size is at xl.

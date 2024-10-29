@@ -31,10 +31,13 @@ const TAEditor: React.FC<IEditor> = ({ mode }) => {
 
   // Load data from the server
   const { taUsers }: any = useLoaderData();
+
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
+  console.log(taUsers)
   const { courseId } = params;
 
   // logged-in TA is the parent of the TA being created and the institution is the same as the parent's
@@ -98,6 +101,7 @@ const TAEditor: React.FC<IEditor> = ({ mode }) => {
                   label="Teaching Assistant Name"
                   name="name"
                   options={taUsers}
+                  
                   inputGroupPrepend={
                     <InputGroup.Text id="TA-name-prep">TA</InputGroup.Text>
                   }

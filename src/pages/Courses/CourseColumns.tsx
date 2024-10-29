@@ -1,102 +1,142 @@
 import { createColumnHelper, Row } from "@tanstack/react-table";
 import { Button, Tooltip, OverlayTrigger, Badge } from "react-bootstrap";
-import { BsPencilFill, BsPersonXFill } from "react-icons/bs";
-import { MdContentCopy, MdDelete } from "react-icons/md";
 import { ICourseResponse as ICourse } from "../../utils/interfaces";
 
 /**
- * @author Suraj Raghu Kumar on October 27, 2023
- * 
+ * Author: Suraj Raghu Kumar on October 27, 2023
  */
 
-// Course Columns Configuration
 type Fn = (row: Row<ICourse>) => void;
 
 const columnHelper = createColumnHelper<ICourse>();
 
-export const courseColumns = (handleEdit: Fn, handleDelete: Fn, handleTA: Fn, handleCopy: Fn, handleShowDetails:(course: ICourse) => void) => [
-  // Column for the course name
+export const courseColumns = (
+  handleEdit: Fn,
+  handleDelete: Fn,
+  handleTA: Fn,
+  handleCopy: Fn,
+  handleShowDetails: (course: ICourse) => void
+) => [
   columnHelper.accessor("name", {
     id: "name",
-    header: "Name",
-    cell: (info) => <a href="#" onClick={() => handleShowDetails(info.row.original)}>{info.getValue()}</a>,
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Course Name</span>,
+    cell: (info) => (
+      <div className="d-flex justify-content-start align-items-center" style={{ fontSize: '1.1em', padding: '8px 0' }}>
+        <span style={{ color: '#000000' }}>{info.getValue()}</span>
+      </div>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
-    enableGlobalFilter: false
+    enableGlobalFilter: false,
   }),
-  // Column for the institution name
+  
+
   columnHelper.accessor("institution.name", {
     id: "institution",
-    header: () => <span style={{ fontWeight: 'bold' }}>Institution</span>,
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Institution</span>,
     enableSorting: true,
     enableMultiSort: true,
     enableGlobalFilter: false,
-    cell: info => <span>{info.getValue() || <Badge bg="secondary">N/A</Badge>}</span>
+    cell: (info) => (
+      <div className="d-flex justify-content-start align-items-center" style={{ fontSize: '1.17em', padding: '8px 0' }}>
+        <span>{info.getValue() || <Badge bg="secondary">Not Available</Badge>}</span>
+      </div>
+    ),
   }),
 
-  // Column for the instructor name
   columnHelper.accessor("instructor.name", {
     id: "instructor",
-    header: () => <span style={{ fontWeight: 'bold' }}>Instructor Name</span>,
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Instructor</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: false,
     cell: ({ row }) => {
       const instructor = row.original.instructor;
       return (
-        <span>
-          {instructor && instructor.name ? (
-            instructor.name
-          ) : (
-            <Badge bg="danger">No Instructor Assigned</Badge>
-          )}
-        </span>
+        <div className="d-flex justify-content-start align-items-center" style={{ fontSize: '1.17em', 
+        padding: '8px 0' }}>
+          <span>
+            {instructor && instructor.name ? (
+              instructor.name
+            ) : (
+              <Badge bg="danger">Unassigned</Badge>
+            )}
+          </span>
+        </div>
       );
     },
   }),
 
-  // Column for the creation date
   columnHelper.accessor("created_at", {
-    header: () => <span style={{ fontWeight: 'bold' }}>Creation Date</span>,
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Creation Date</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: true,
-    cell: info => <span>{new Date(info.getValue()).toLocaleDateString() || <Badge bg="secondary">N/A</Badge>}</span>
+    cell: (info) => (
+      <div className="d-flex justify-content-start align-items-center" style={{ fontSize: '1.17em', padding: '8px 0' }}>
+        <span>{new Date(info.getValue()).toLocaleDateString() || <Badge bg="secondary">N/A</Badge>}</span>
+      </div>
+    ),
   }),
 
-  // Column for the last updated date
   columnHelper.accessor("updated_at", {
-    header: () => <span style={{ fontWeight: 'bold' }}>Updated Date</span>,
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Updated Date</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: true,
-    cell: info => <span>{new Date(info.getValue()).toLocaleDateString() || <Badge bg="secondary">N/A</Badge>}</span>
+    cell: (info) => (
+      <div className="d-flex justify-content-start align-items-center" style={{ fontSize: '1.17em', padding: '8px 0' }}>
+        <span>{new Date(info.getValue()).toLocaleDateString() || <Badge bg="secondary">N/A</Badge>}</span>
+      </div>
+    ),
   }),
 
-  // Actions column with edit, delete, TA, and copy buttons
   columnHelper.display({
     id: "actions",
-    header: "Actions",
+    header: () => <span style={{ fontWeight: 'bold', color: '#000000', fontSize: '1.17em' }}>Actions</span>,
     cell: ({ row }) => (
-      <div className="d-flex">
+      <div className="d-flex justify-content-around" style={{ fontSize: '1.17em', padding: '8px 0' }}>
         <OverlayTrigger overlay={<Tooltip>Edit Course</Tooltip>}>
-          <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row)} className="me-1" aria-label="Edit Course">
-            <BsPencilFill />
+          <Button
+            variant="link"
+            onClick={() => handleEdit(row)}
+            aria-label="Edit Course"
+            style={{ padding: '0', margin: '0 8px' }} // Add margin for spacing
+          >
+            <img src={process.env.PUBLIC_URL + '/assets/images/pencil.png'} alt="Edit" style={{ width: '25px', height: '20px' }} />
           </Button>
         </OverlayTrigger>
+
         <OverlayTrigger overlay={<Tooltip>Delete Course</Tooltip>}>
-          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row)} className="me-1" aria-label="Delete Course">
-            <MdDelete />
+          <Button
+            variant="link"
+            onClick={() => handleDelete(row)}
+            aria-label="Delete Course"
+            style={{ padding: '0', margin: '0 8px' }}
+          >
+            <img src={process.env.PUBLIC_URL + '/assets/images/remove.png'} alt="Delete" style={{ width: '25px', height: '20px' }} />
           </Button>
         </OverlayTrigger>
+
         <OverlayTrigger overlay={<Tooltip>Assign TA</Tooltip>}>
-          <Button variant="outline-info" size="sm" onClick={() => handleTA(row)} className="me-1" aria-label="Assign TA">
-            <BsPersonXFill />
+          <Button
+            variant="link"
+            onClick={() => handleTA(row)}
+            aria-label="Assign TA"
+            style={{ padding: '0', margin: '0 8px' }}
+          >
+            <img src={process.env.PUBLIC_URL + '/assets/images/assign.png'} alt="Assign TA" style={{ width: '35px', height: '25px' }} />
           </Button>
         </OverlayTrigger>
+
         <OverlayTrigger overlay={<Tooltip>Copy Course</Tooltip>}>
-          <Button variant="outline-primary" size="sm" onClick={() => handleCopy(row)} aria-label="Copy Course">
-            <MdContentCopy />
+          <Button
+            variant="link"
+            onClick={() => handleCopy(row)}
+            aria-label="Copy Course"
+            style={{ padding: '0', margin: '0 8px' }}
+          >
+            <img src={process.env.PUBLIC_URL + '/assets/images/paste.png'} alt="Copy" style={{ width: '35px', height: '25px' }} />
           </Button>
         </OverlayTrigger>
       </div>

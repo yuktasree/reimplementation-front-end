@@ -4,9 +4,9 @@ import { ICourseResponse as ICourse } from "../../utils/interfaces";
 
 
 /**
- * @author Aniket Singh Shaktawat, on March, 2024 
- * @author Pankhi Saini on March, 2024
- * @author Siddharth Shah on March, 2024
+ * @author Suraj Raghu Kumar on Oct, 2024
+ * @author Harvardhan Patil on Oct,2024
+ * @author Yuktasree Muppala on Oct,2024
  */
 
 

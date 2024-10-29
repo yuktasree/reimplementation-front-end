@@ -40,11 +40,17 @@ const Courses = () => {
   // show course
   const [showDetailsModal, setShowDetailsModal] = useState<boolean>(false);
   const [selectedCourse, setSelectedCourse] = useState<ICourse | null>(null);
-  const handleShowDetails = (course: ICourse) => {
-    setSelectedCourse(course);
-    setShowDetailsModal(true);
-  };
+  
+  // Utility function to manage modals
+const showModal = (setModalState: React.Dispatch<React.SetStateAction<boolean>>, setData?: (data: ICourse | null) => void, data?: ICourse) => {
+  if (setData) {
+      setData(data || null);
+  }
+  setModalState(true);
+};
 
+// Using showModal for showing course details
+const handleShowDetails = (course: ICourse) => showModal(setShowDetailsModal, setSelectedCourse, course);
   // State for delete and copy confirmation modals
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<{
     visible: boolean;

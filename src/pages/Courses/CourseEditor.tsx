@@ -75,8 +75,10 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
     if (users) {
       const instructorsList: IFormOption[] = [{ label: 'Select an Instructor', value: '' }];
       console.log('Selected Institution ID:', selectedInstitutionId)
-      
-      const onlyInstructors = users.data.filter((user: any) => (user.role.name === 'Instructor')&& (user.institution.id === selectedInstitutionId)); // Filter by institution
+     
+      // Filter by instructors by institution
+      const onlyInstructors = users.data.filter((user: any) => 
+        (user.role.name === 'Instructor')&& (user.institution.id === selectedInstitutionId)); 
       console.log('Users:', users.data)
       onlyInstructors.forEach((instructor: any) => {
         instructorsList.push({ label: instructor.name, value: String(instructor.id) });
@@ -87,32 +89,36 @@ const CourseEditor: React.FC<IEditor> = ({ mode }) => {
   }, [users, selectedInstitutionId]); // Re-run this effect when users or selectedInstitutionId changes
   
   // Handle institution selection change
-  const handleInstitutionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const institutionId = Number(event.target.value);
-    
-
-    setSelectedInstitutionId(institutionId); // Update the selected institution
-  };
-  
-  initialValues.institution_id = -1;
-
-  // Close the modal if the course is updated successfully and navigate to the courses page
-  useEffect(() => {
-    if (courseResponse && courseResponse.status >= 200 && courseResponse.status < 300) {
-      dispatch(
-        alertActions.showAlert({
-          variant: "success",
-          message: `Course ${courseData.name} ${mode}d successfully!`,
-        })
-      );
-      navigate(location.state?.from ? location.state.from : "/courses");
-    }
-  }, [dispatch, mode, navigate, courseData.name, courseResponse, location.state?.from]);
-
-  // Show the error message if the course is not updated successfully
-  useEffect(() => {
-    courseError && dispatch(alertActions.showAlert({ variant: "danger", message: courseError }));
-  }, [courseError, dispatch]);
+const handleInstitutionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const institutionId = Number(event.target.value);
+  setSelectedInstitutionId(institutionId);
+};
+// Success handler for course submission
+const handleCourseSuccess = () => {
+  if (courseResponse && courseResponse.status >= 200 && courseResponse.status < 300) {
+    dispatch(
+      alertActions.showAlert({
+        variant: "success",
+        message: `Course ${courseData.name} ${mode}d successfully!`,
+      })
+    );
+    navigate(location.state?.from ? location.state.from : "/courses");
+  }
+};
+// Error handler for course submission
+const handleCourseError = () => {
+  if (courseError) {
+    dispatch(alertActions.showAlert({ variant: "danger", message: courseError }));
+  }
+};
+// useEffect to monitor success response
+useEffect(() => {
+  handleCourseSuccess();
+}, [courseResponse]);
+// useEffect to monitor error response
+useEffect(() => {
+  handleCourseError();
+}, [courseError]);
 
   // Function to handle form submission
   const onSubmit = (values: ICourseFormValues, submitProps: FormikHelpers<ICourseFormValues>) => {

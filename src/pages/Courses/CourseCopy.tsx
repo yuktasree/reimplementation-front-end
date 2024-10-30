@@ -7,9 +7,9 @@ import useAPI from "../../hooks/useAPI";
 import { ICourseResponse as ICourse } from "../../utils/interfaces";
 
 /**
- * @author Aniket Singh Shaktawat, on March, 2024 
- * @author Pankhi Saini on March, 2024
- * @author Siddharth Shah on March, 2024
+ * @author Suraj Raghu Kumar, on Oct, 2024 
+ * @author Yuktasree Muppala on Oct, 2024
+ * @author Harvardhan Patil on Oct, 2024
  */
 
 // CopyCourse Component: Modal for copying a course.
@@ -25,11 +25,11 @@ const CopyCourse: React.FC<ICopyCourse> = ({ courseData, onClose }) => {
   const [show, setShow] = useState<boolean>(true);
   const [isCopying, setIsCopying] = useState<boolean>(false); // State to track copying process
   const dispatch = useDispatch();
-
+  const courseId = courseData.id;
   // Function to initiate the course copy process
   const copyHandler = () => {
     setIsCopying(true); // Set copying state to true
-    copyCourseRequest({ url: `/courses/${courseData.id}/copy`, method: HttpMethod.GET });
+    copyCourseRequest({ url: `/courses/${courseId}/copy`, method: HttpMethod.GET });
   };
 
   // Show error if any

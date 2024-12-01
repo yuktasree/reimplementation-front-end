@@ -169,24 +169,11 @@ const handleShowDetails = (course: ICourse) => showModal(setShowDetailsModal, se
             <hr />
           </Row>
 
-          <Row className="mb-4 justify-content-end">
-            <Col xs="auto">
-              <Button
-                variant="success"
-                size="lg"
-                onClick={() => navigate("new")}
-                aria-label="Add New Course"
-                style={{
-                  fontSize: '1rem',
-                  padding: '8px 24px',
-                  borderRadius: '10px',
-                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <RiHealthBookLine style={{ marginRight: '8px', fontSize: '1.4rem' }} />
-                Add Course
+          <Row>
+
+          <Col md={{ span: 1, offset: 11 }} style={{ paddingBottom: "10px" }}>
+              <Button variant="outline-success" onClick={() => navigate("new")}>
+                <RiHealthBookLine />
               </Button>
             </Col>
           </Row>

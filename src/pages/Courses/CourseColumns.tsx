@@ -103,7 +103,7 @@ export const courseColumns = (
             aria-label="Edit Course"
             style={{ padding: '0', margin: '0 8px' }} // Add margin for spacing
           >
-            <img src={process.env.PUBLIC_URL + '/assets/images/pencil.png'} alt="Edit" style={{ width: '25px', height: '20px' }} />
+            <img src={process.env.PUBLIC_URL + '/assets/images/edit-icon-24.png'} alt="Edit" style={{ width: '25px', height: '20px' }} />
           </Button>
         </OverlayTrigger>
 
@@ -114,7 +114,7 @@ export const courseColumns = (
             aria-label="Delete Course"
             style={{ padding: '0', margin: '0 8px' }}
           >
-            <img src={process.env.PUBLIC_URL + '/assets/images/remove.png'} alt="Delete" style={{ width: '25px', height: '20px' }} />
+            <img src={process.env.PUBLIC_URL + '/assets/images/delete-icon-24.png'} alt="Delete" style={{ width: '25px', height: '20px' }} />
           </Button>
         </OverlayTrigger>
 
@@ -125,7 +125,7 @@ export const courseColumns = (
             aria-label="Assign TA"
             style={{ padding: '0', margin: '0 8px' }}
           >
-            <img src={process.env.PUBLIC_URL + '/assets/images/assign.png'} alt="Assign TA" style={{ width: '35px', height: '25px' }} />
+            <img src={process.env.PUBLIC_URL + '/assets/images/add-ta-24.png'} alt="Assign TA" style={{ width: '35px', height: '25px' }} />
           </Button>
         </OverlayTrigger>
 
@@ -136,7 +136,7 @@ export const courseColumns = (
             aria-label="Copy Course"
             style={{ padding: '0', margin: '0 8px' }}
           >
-            <img src={process.env.PUBLIC_URL + '/assets/images/paste.png'} alt="Copy" style={{ width: '35px', height: '25px' }} />
+            <img src={process.env.PUBLIC_URL + '/assets/images/Copy-icon-24.png'} alt="Copy" style={{ width: '35px', height: '25px' }} />
           </Button>
         </OverlayTrigger>
       </div>

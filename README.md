@@ -1,46 +1,55 @@
-# Getting Started with Create React App
+# CSC/ECE 517 Fall 2024 - E2461: UI for Courses Management
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+This project focuses on enhancing the UI for managing courses within Expertiza, an open-source learning management system built on Ruby on Rails. The Courses Management UI has been redesigned using React and TypeScript to offer a more user-friendly and responsive interface for administrators.
 
-## Available Scripts
+## Contents
+1. [About](#about)
+2. [Design Goals](#design-goals)
+3. [Design Patterns](#design-patterns)
+4. [Files Modified](#files-modified)
+5. [Reimplementation Details](#reimplementation-details)
+6. [Test Plan](#test-plan)
+7. [Team](#team)
 
-In the project directory, you can run:
+## About
+The project reimplements the Courses Management Page in React and TypeScript, designed for admin access. It enables admins to view, add, edit, delete, duplicate courses, and manage TAs, presenting information in a paginated table with options for quick actions.
 
-### `npm start`
+Key features include:
+- **Responsive Design**: Consistent UI across devices.
+- **Enhanced Functionality**: Streamlined course and TA management.
+- **Performance Optimization**: Faster load times and smoother interactions.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Design Goals
+This project aims to:
+- **Optimize Usability**: Simplify course navigation and management.
+- **Ensure Responsiveness**: Maintain functionality across device types.
+- **Enhance Performance**: Refactor code to improve efficiency.
+- **Implement Role-Based Access**: Restrict specific actions to admins.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Design Patterns
+1. **Single Responsibility Principle (SRP)**: Each method handles a specific task, improving maintainability.
+2. **Separation of Concerns (SoC)**: Cleanly separates data handling and UI logic.
+3. **Observer Pattern**: Used for handling UI updates with `useEffect`.
+4. **Template Method Pattern**: Reusable templates for modals and alerts.
 
-### `npm test`
+## Files Modified
+- `Course.tsx`: Displays course listings with actions.
+- `CourseColumns.tsx`: Defines table columns and configurations.
+- `CourseCopy.tsx`: Handles course duplication modal.
+- `CourseDelete.tsx`: Manages course deletion with confirmation.
+- `CourseEditor.tsx`: Modal for adding/editing courses.
+- `CourseUtil.tsx`: Utility functions for course data handling.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Reimplementation Details
+Several methods were refactored for enhanced readability and modularity:
+- **`handleInstitutionChange`**: Modularized alert and navigation logic.
+- **`showModal`**: Reusable modal display utility.
+- **`copyHandler`**: Optimized for interface segregation by focusing on `courseId`.
+- **`handleDeleteSuccess`**: Consolidates delete success logic for flexibility.
 
-### `npm run build`
+## Test Plan
+Tests cover UI components, data handling, and user interactions to ensure all functionalities, including modals, buttons, and filters, work as expected across devices.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Team
+- **Members**: Suraj Raghu Kumar, Harshvardhan Patil, Yuktasree Muppala
